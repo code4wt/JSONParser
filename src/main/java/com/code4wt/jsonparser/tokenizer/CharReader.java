@@ -23,12 +23,24 @@ public class CharReader {
         buffer = new char[BUFFER_SIZE];
     }
 
+    public char peek() throws IOException {
+        if (!hasMore()) {
+            return (char) -1;
+        }
+
+        return buffer[Math.max(0, pos - 1)];
+    }
+
     public char next() throws IOException {
         if (!hasMore()) {
             return (char) -1;
         }
 
         return buffer[pos++];
+    }
+
+    public void back() {
+        pos = Math.max(0, --pos);
     }
 
     public boolean hasMore() throws IOException {
