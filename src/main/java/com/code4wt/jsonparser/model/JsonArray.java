@@ -37,4 +37,11 @@ public class JsonArray implements Json {
 
         return (JsonArray) obj;
     }
+
+    @Override
+    public String toString() {
+        return "JsonArray{" +
+                "list=" + list +
+                '}';
+    }
 }

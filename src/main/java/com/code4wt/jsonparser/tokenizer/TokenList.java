@@ -21,7 +21,7 @@ public class TokenList {
     }
 
     public Token peekPrevious() {
-        return pos - 1 < 0 ? null : tokens.get(pos - 1);
+        return pos - 1 < 0 ? null : tokens.get(pos - 2);
     }
 
     public Token next() {
@@ -30,5 +30,12 @@ public class TokenList {
 
     public boolean hasMore() {
         return pos < tokens.size();
+    }
+
+    @Override
+    public String toString() {
+        return "TokenList{" +
+                "tokens=" + tokens +
+                '}';
     }
 }

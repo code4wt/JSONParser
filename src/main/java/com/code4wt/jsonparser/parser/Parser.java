@@ -40,7 +40,7 @@ public class Parser {
         } else if (token.getTokenType() == BEGIN_OBJECT) {
             return parseJsonObject();
         } else if (token.getTokenType() == BEGIN_ARRAY) {
-            return null;
+            return parseJsonArray();
         } else {
             throw new JsonParseException("Parse error, invalid Token.");
         }
@@ -51,22 +51,22 @@ public class Parser {
         int expectToken = STRING_TOKEN | END_OBJECT_TOKEN;
         String key = null;
         Object value = null;
-        while (tokens.hasMore()){
+        while (tokens.hasMore()) {
             Token token = tokens.next();
             TokenType tokenType = token.getTokenType();
+            String tokenValue = token.getValue();
             switch (tokenType) {
             case BEGIN_OBJECT:
                 if ((tokenType.getTokenCode() & expectToken) == 0) {
                     throw new JsonParseException("Parse error, invalid Token.");
                 }
                 jsonObject.put(key, parseJsonObject());    // 递归解析json object
-                expectToken = STRING_TOKEN | END_OBJECT_TOKEN;
+                expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_DOCUMENT_TOKEN;
                 break;
             case END_OBJECT:
                 if ((tokenType.getTokenCode() & expectToken) == 0) {
                     throw new JsonParseException("Parse error, invalid Token.");
                 }
-                expectToken = SEP_COMMA_TOKEN | END_DOCUMENT_TOKEN;
                 return jsonObject;
             case BEGIN_ARRAY:
                 if ((tokenType.getTokenCode() & expectToken) == 0) {
@@ -81,18 +81,25 @@ public class Parser {
                 }
                 jsonObject.put(key, null);
                 expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_ARRAY_TOKEN;
+                break;
             case NUMBER:
                 if ((tokenType.getTokenCode() & expectToken) == 0) {
                     throw new JsonParseException("Parse error, invalid Token.");
                 }
-                jsonObject.put(key, Integer.parseInt(token.getValue()));
+                if (tokenValue.contains(".") || tokenValue.contains("e") || tokenValue.contains("E")) {
+                    jsonObject.put(key, Double.valueOf(tokenValue));
+                } else {
+                    jsonObject.put(key, Integer.valueOf(tokenValue));
+                }
                 expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_ARRAY_TOKEN;
+                break;
             case BOOLEAN:
                 if ((tokenType.getTokenCode() & expectToken) == 0) {
                     throw new JsonParseException("Parse error, invalid Token.");
                 }
                 jsonObject.put(key, Boolean.valueOf(token.getValue()));
                 expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_ARRAY_TOKEN;
+                break;
             case STRING:
                 if ((tokenType.getTokenCode() & expectToken) == 0) {
                     throw new JsonParseException("Parse error, invalid Token.");
@@ -132,10 +139,10 @@ public class Parser {
         int expectToken = END_ARRAY_TOKEN | BEGIN_OBJECT_TOKEN | NULL_TOKEN
                 | NUMBER_TOKEN | BOOLEAN_TOKEN | STRING_TOKEN;
         JsonArray jsonArray = new JsonArray();
-        Object value = null;
         while (tokens.hasMore()) {
             Token token = tokens.next();
             TokenType tokenType = token.getTokenType();
+            String tokenValue = token.getValue();
             switch (tokenType) {
                 case BEGIN_OBJECT:
                     if ((tokenType.getTokenCode() & expectToken) == 0) {
@@ -156,16 +163,35 @@ public class Parser {
                     }
                     return jsonArray;
                 case NULL:
-                    value = null;
+                    if ((tokenType.getTokenCode() & expectToken) == 0) {
+                        throw new JsonParseException("Parse error, invalid Token.");
+                    }
+                    jsonArray.add(null);
+                    expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_ARRAY_TOKEN;
+                    break;
                 case NUMBER:
-                    value = Integer.parseInt(token.getValue());
+                    if ((tokenType.getTokenCode() & expectToken) == 0) {
+                        throw new JsonParseException("Parse error, invalid Token.");
+                    }
+                    if (tokenValue.contains(".") || tokenValue.contains("e") || tokenValue.contains("E")) {
+                        jsonArray.add(Double.valueOf(tokenValue));
+                    } else {
+                        jsonArray.add(Integer.valueOf(tokenValue));
+                    }
+                    expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_ARRAY_TOKEN;
+                    break;
                 case BOOLEAN:
-                    value = Boolean.valueOf(token.getValue());
+                    if ((tokenType.getTokenCode() & expectToken) == 0) {
+                        throw new JsonParseException("Parse error, invalid Token.");
+                    }
+                    jsonArray.add(Boolean.valueOf(tokenValue));
+                    expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_ARRAY_TOKEN;
+                    break;
                 case STRING:
                     if ((tokenType.getTokenCode() & expectToken) == 0) {
                         throw new JsonParseException("Parse error, invalid Token.");
                     }
-                    jsonArray.add(value);
+                    jsonArray.add(tokenValue);
                     expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_ARRAY_TOKEN;
                     break;
                 case SEP_COMMA:

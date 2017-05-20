@@ -1,6 +1,8 @@
 package com.code4wt.jsonparser.tokenizer;
 
 import com.code4wt.jsonparser.exception.JsonParseException;
+import com.code4wt.jsonparser.model.Json;
+import com.code4wt.jsonparser.parser.Parser;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -269,10 +271,19 @@ public class Tokenizer {
         json = "-12.3e-2";
         json = "1a.5";
         json = "0.000000123E+1024";
+        json = "{\"a\": 1, \"b\": \"b\", \"c\": {\"a\": 1, \"b\": null, \"c\": [0.1, \"a\", 1,2, 123, 1.23e+10, true, null]}}";
+        json = "[0.1, \"a\", 1,2, 123, 1.23e+10, true, null]";
         CharReader charReader = new CharReader(new StringReader(json));
         TokenList tokens = new TokenList();
         Tokenizer tokenizer = new Tokenizer(charReader, tokens);
         tokenizer.tokenize();
+        Parser parser = new Parser(tokens);
+        Json jo = parser.parse();
         System.out.println(tokens);
+        System.out.println(jo);
+//        System.out.println(((JsonObject) jo).get("a"));
+//        System.out.println(((JsonObject) jo).get("b"));
+//        System.out.println(((JsonObject) jo).getJsonObject("c").get("a"));
+//        System.out.println(((JsonObject) jo).getJsonObject("c").getJsonArray("c"));
     }
 }
