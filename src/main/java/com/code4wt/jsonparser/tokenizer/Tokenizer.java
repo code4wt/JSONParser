@@ -4,8 +4,6 @@ import com.code4wt.jsonparser.exception.JsonParseException;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.code4wt.jsonparser.tokenizer.TokenType.*;
 
@@ -16,9 +14,9 @@ public class Tokenizer {
 
     private CharReader charReader;
 
-    private List<Token> tokens = new ArrayList<Token>();
+    private TokenList tokens;
 
-    public Tokenizer(CharReader charReader, List<Token> tokens) {
+    public Tokenizer(CharReader charReader, TokenList tokens) {
         this.charReader = charReader;
         this.tokens = tokens;
     }
@@ -27,12 +25,12 @@ public class Tokenizer {
         // 使用do-while处理空文件
         Token token;
         do {
-            token = parse();
+            token = start();
             tokens.add(token);
         } while (token.getTokenType() != END_DOCUMENT);
     }
 
-    private Token parse() throws IOException {
+    private Token start() throws IOException {
         char ch;
         for(;;) {
             if (!charReader.hasMore()) {
@@ -272,7 +270,7 @@ public class Tokenizer {
         json = "1a.5";
         json = "0.000000123E+1024";
         CharReader charReader = new CharReader(new StringReader(json));
-        List<Token> tokens = new ArrayList<Token>();
+        TokenList tokens = new TokenList();
         Tokenizer tokenizer = new Tokenizer(charReader, tokens);
         tokenizer.tokenize();
         System.out.println(tokens);
