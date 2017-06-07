@@ -1,4 +1,4 @@
-package com.code4wt.jsonparser.tokenizer;
+package com.titizz.jsonparser.tokenizer;
 
 /**
  * Created by code4wt on 17/5/10.

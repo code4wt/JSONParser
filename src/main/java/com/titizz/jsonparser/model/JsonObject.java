@@ -1,6 +1,6 @@
-package com.code4wt.jsonparser.model;
+package com.titizz.jsonparser.model;
 
-import com.code4wt.jsonparser.exception.JsonTypeException;
+import com.titizz.jsonparser.exception.JsonTypeException;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,13 +1,11 @@
-package com.code4wt.jsonparser.tokenizer;
+package com.titizz.jsonparser.tokenizer;
 
-import com.code4wt.jsonparser.exception.JsonParseException;
-import com.code4wt.jsonparser.model.Json;
-import com.code4wt.jsonparser.parser.Parser;
+import com.titizz.jsonparser.exception.JsonParseException;
+import com.titizz.jsonparser.model.Json;
+import com.titizz.jsonparser.parser.Parser;
 
 import java.io.IOException;
 import java.io.StringReader;
-
-import static com.code4wt.jsonparser.tokenizer.TokenType.*;
 
 /**
  * Created by code4wt on 17/5/10.
@@ -29,14 +27,14 @@ public class Tokenizer {
         do {
             token = start();
             tokens.add(token);
-        } while (token.getTokenType() != END_DOCUMENT);
+        } while (token.getTokenType() != TokenType.END_DOCUMENT);
     }
 
     private Token start() throws IOException {
         char ch;
         for(;;) {
             if (!charReader.hasMore()) {
-                return new Token(END_DOCUMENT, null);
+                return new Token(TokenType.END_DOCUMENT, null);
             }
 
             ch = charReader.next();
@@ -47,17 +45,17 @@ public class Tokenizer {
 
         switch (ch) {
             case '{':
-                return new Token(BEGIN_OBJECT, String.valueOf(ch));
+                return new Token(TokenType.BEGIN_OBJECT, String.valueOf(ch));
             case '}':
-                return new Token(END_OBJECT, String.valueOf(ch));
+                return new Token(TokenType.END_OBJECT, String.valueOf(ch));
             case '[':
-                return new Token(BEGIN_ARRAY, String.valueOf(ch));
+                return new Token(TokenType.BEGIN_ARRAY, String.valueOf(ch));
             case ']':
-                return new Token(END_ARRAY, String.valueOf(ch));
+                return new Token(TokenType.END_ARRAY, String.valueOf(ch));
             case ',':
-                return new Token(SEP_COMMA, String.valueOf(ch));
+                return new Token(TokenType.SEP_COMMA, String.valueOf(ch));
             case ':':
-                return new Token(SEP_COLON, String.valueOf(ch));
+                return new Token(TokenType.SEP_COLON, String.valueOf(ch));
             case 'n':
                 return readNull();
             case 't':
@@ -104,7 +102,7 @@ public class Tokenizer {
 
                 continue;
             } else if (ch == '"') {
-                return new Token(STRING, sb.toString());
+                return new Token(TokenType.STRING, sb.toString());
             } else if (ch == '\r' || ch == '\n') {
                 throw new JsonParseException("Invalid character");
             } else {
@@ -163,7 +161,7 @@ public class Tokenizer {
             }
         }
 
-        return new Token(NUMBER, sb.toString());
+        return new Token(TokenType.NUMBER, sb.toString());
     }
 
     private boolean isExp(char ch) throws IOException {
@@ -241,14 +239,14 @@ public class Tokenizer {
                 throw new JsonParseException("Invalid json string");
             }
 
-            return new Token(BOOLEAN, "true");
+            return new Token(TokenType.BOOLEAN, "true");
         } else {
             if (!(charReader.next() == 'a' && charReader.next() == 'l'
                     && charReader.next() == 's' && charReader.next() == 'e')) {
                 throw new JsonParseException("Invalid json string");
             }
 
-            return new Token(BOOLEAN, "false");
+            return new Token(TokenType.BOOLEAN, "false");
         }
     }
 
@@ -257,7 +255,7 @@ public class Tokenizer {
             throw new JsonParseException("Invalid json string");
         }
 
-        return new Token(NULL, "null");
+        return new Token(TokenType.NULL, "null");
     }
 
     public static void main(String[] args) throws IOException {

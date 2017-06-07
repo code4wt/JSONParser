@@ -1,4 +1,4 @@
-package com.code4wt.jsonparser.model;
+package com.titizz.jsonparser.model;
 
 /**
  * Created by code4wt on 17/5/19.

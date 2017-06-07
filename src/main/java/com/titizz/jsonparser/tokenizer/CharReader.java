@@ -1,4 +1,4 @@
-package com.code4wt.jsonparser.tokenizer;
+package com.titizz.jsonparser.tokenizer;
 
 import java.io.IOException;
 import java.io.Reader;

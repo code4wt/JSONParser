@@ -1,4 +1,4 @@
-package com.code4wt.jsonparser;
+package com.titizz.jsonparser;
 
 import java.io.IOException;
 

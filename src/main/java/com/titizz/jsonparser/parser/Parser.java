@@ -1,14 +1,12 @@
-package com.code4wt.jsonparser.parser;
+package com.titizz.jsonparser.parser;
 
-import com.code4wt.jsonparser.exception.JsonParseException;
-import com.code4wt.jsonparser.model.Json;
-import com.code4wt.jsonparser.model.JsonArray;
-import com.code4wt.jsonparser.model.JsonObject;
-import com.code4wt.jsonparser.tokenizer.Token;
-import com.code4wt.jsonparser.tokenizer.TokenList;
-import com.code4wt.jsonparser.tokenizer.TokenType;
-
-import static com.code4wt.jsonparser.tokenizer.TokenType.*;
+import com.titizz.jsonparser.exception.JsonParseException;
+import com.titizz.jsonparser.model.Json;
+import com.titizz.jsonparser.model.JsonArray;
+import com.titizz.jsonparser.model.JsonObject;
+import com.titizz.jsonparser.tokenizer.Token;
+import com.titizz.jsonparser.tokenizer.TokenList;
+import com.titizz.jsonparser.tokenizer.TokenType;
 
 /**
  * Created by code4wt on 17/5/19.
@@ -37,9 +35,9 @@ public class Parser {
         Token token = tokens.next();
         if (token == null) {
             return new JsonObject();
-        } else if (token.getTokenType() == BEGIN_OBJECT) {
+        } else if (token.getTokenType() == TokenType.BEGIN_OBJECT) {
             return parseJsonObject();
-        } else if (token.getTokenType() == BEGIN_ARRAY) {
+        } else if (token.getTokenType() == TokenType.BEGIN_ARRAY) {
             return parseJsonArray();
         } else {
             throw new JsonParseException("Parse error, invalid Token.");
@@ -105,7 +103,7 @@ public class Parser {
                     throw new JsonParseException("Parse error, invalid Token.");
                 }
                 Token preToken = tokens.peekPrevious();
-                if (preToken.getTokenType() == SEP_COLON) {
+                if (preToken.getTokenType() == TokenType.SEP_COLON) {
                     value = token.getValue();
                     jsonObject.put(key, value);
                     expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_ARRAY_TOKEN;
