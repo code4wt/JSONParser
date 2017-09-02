@@ -1,14 +1,16 @@
 package com.titizz.jsonparser.model;
 
+import com.titizz.jsonparser.BeautifyJsonUtils;
 import com.titizz.jsonparser.exception.JsonTypeException;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by code4wt on 17/5/19.
  */
-public class JsonArray implements Json {
+public class JsonArray implements Iterable {
 
     private List list = new ArrayList();
 
@@ -18,6 +20,10 @@ public class JsonArray implements Json {
 
     public Object get(int index) {
         return list.get(index);
+    }
+
+    public int size() {
+        return list.size();
     }
 
     public JsonObject getJsonObject(int index) {
@@ -40,8 +46,10 @@ public class JsonArray implements Json {
 
     @Override
     public String toString() {
-        return "JsonArray{" +
-                "list=" + list +
-                '}';
+        return BeautifyJsonUtils.beautify(this);
+    }
+
+    public Iterator iterator() {
+        return list.iterator();
     }
 }

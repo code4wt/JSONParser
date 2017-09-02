@@ -1,7 +1,6 @@
 package com.titizz.jsonparser.parser;
 
 import com.titizz.jsonparser.exception.JsonParseException;
-import com.titizz.jsonparser.model.Json;
 import com.titizz.jsonparser.model.JsonArray;
 import com.titizz.jsonparser.model.JsonObject;
 import com.titizz.jsonparser.tokenizer.Token;
@@ -27,11 +26,12 @@ public class Parser {
 
     private TokenList tokens;
 
-    public Parser(TokenList tokens) {
+    public Object parse(TokenList tokens) {
         this.tokens = tokens;
+        return parse();
     }
 
-    public Json parse() {
+    private Object parse() {
         Token token = tokens.next();
         if (token == null) {
             return new JsonObject();
@@ -44,9 +44,9 @@ public class Parser {
         }
     }
 
-    public JsonObject parseJsonObject() {
+    private JsonObject parseJsonObject() {
         JsonObject jsonObject = new JsonObject();
-        int expectToken = STRING_TOKEN | END_OBJECT_TOKEN;
+        int expectToken = STRING_TOKEN | BEGIN_OBJECT_TOKEN | END_OBJECT_TOKEN;
         String key = null;
         Object value = null;
         while (tokens.hasMore()) {
@@ -87,7 +87,12 @@ public class Parser {
                 if (tokenValue.contains(".") || tokenValue.contains("e") || tokenValue.contains("E")) {
                     jsonObject.put(key, Double.valueOf(tokenValue));
                 } else {
-                    jsonObject.put(key, Integer.valueOf(tokenValue));
+                    Long num = Long.valueOf(tokenValue);
+                    if (num > Integer.MAX_VALUE) {
+                        jsonObject.put(key, num);
+                    } else {
+                        jsonObject.put(key, num.intValue());
+                    }
                 }
                 expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_ARRAY_TOKEN;
                 break;
@@ -133,8 +138,8 @@ public class Parser {
         throw new JsonParseException("Parse error, invalid Token.");
     }
 
-    public JsonArray parseJsonArray() {
-        int expectToken = END_ARRAY_TOKEN | BEGIN_OBJECT_TOKEN | NULL_TOKEN
+    private JsonArray parseJsonArray() {
+        int expectToken = BEGIN_ARRAY_TOKEN | END_ARRAY_TOKEN | BEGIN_OBJECT_TOKEN | NULL_TOKEN
                 | NUMBER_TOKEN | BOOLEAN_TOKEN | STRING_TOKEN;
         JsonArray jsonArray = new JsonArray();
         while (tokens.hasMore()) {
@@ -146,7 +151,7 @@ public class Parser {
                     if ((tokenType.getTokenCode() & expectToken) == 0) {
                         throw new JsonParseException("Parse error, invalid Token.");
                     }
-                    parseJsonObject();
+                    jsonArray.add(parseJsonObject());
                     expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_ARRAY_TOKEN;
                     break;
                 case BEGIN_ARRAY:
@@ -154,7 +159,8 @@ public class Parser {
                         throw new JsonParseException("Parse error, invalid Token.");
                     }
                     jsonArray.add(parseJsonArray());
-                    expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_DOCUMENT_TOKEN;
+                    expectToken = SEP_COMMA_TOKEN | END_OBJECT_TOKEN | END_ARRAY_TOKEN | END_DOCUMENT_TOKEN;
+                    break;
                 case END_ARRAY:
                     if ((tokenType.getTokenCode() & expectToken) == 0) {
                         throw new JsonParseException("Parse error, invalid Token.");

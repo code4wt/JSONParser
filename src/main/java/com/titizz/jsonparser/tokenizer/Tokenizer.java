@@ -1,11 +1,8 @@
 package com.titizz.jsonparser.tokenizer;
 
 import com.titizz.jsonparser.exception.JsonParseException;
-import com.titizz.jsonparser.model.Json;
-import com.titizz.jsonparser.parser.Parser;
 
 import java.io.IOException;
-import java.io.StringReader;
 
 /**
  * Created by code4wt on 17/5/10.
@@ -16,12 +13,15 @@ public class Tokenizer {
 
     private TokenList tokens;
 
-    public Tokenizer(CharReader charReader, TokenList tokens) {
+    public TokenList tokenize(CharReader charReader) throws IOException {
         this.charReader = charReader;
-        this.tokens = tokens;
+        tokens = new TokenList();
+        tokenize();
+
+        return tokens;
     }
 
-    public void tokenize() throws IOException {
+    private void tokenize() throws IOException {
         // 使用do-while处理空文件
         Token token;
         do {
@@ -82,6 +82,9 @@ public class Tokenizer {
         StringBuilder sb = new StringBuilder();
         for (;;) {
             char ch = charReader.next();
+            if (ch == '泠') {
+                int a = 1;
+            }
             if (ch == '\\') {
                 if (!isEscape()) {
                     throw new JsonParseException("Invalid escape character");
@@ -256,32 +259,5 @@ public class Tokenizer {
         }
 
         return new Token(TokenType.NULL, "null");
-    }
-
-    public static void main(String[] args) throws IOException {
-        String json = "{\"a\": \"ab\\ncd\", \"b\": true, \"c\": false, \"d\": null, \"f\": -0.2e+2, {\"a\": [1, 0.1, 1.1e+5]}}";
-        json = "-0.1e+2";
-        json = "0000";
-        json = "-000-0";
-        json = "123.123";
-        json = "-123.123";
-        json = "12.3e-2";
-        json = "-12.3e-2";
-        json = "1a.5";
-        json = "0.000000123E+1024";
-        json = "{\"a\": 1, \"b\": \"b\", \"c\": {\"a\": 1, \"b\": null, \"c\": [0.1, \"a\", 1,2, 123, 1.23e+10, true, null]}}";
-        json = "[0.1, \"a\", 1,2, 123, 1.23e+10, true, null]";
-        CharReader charReader = new CharReader(new StringReader(json));
-        TokenList tokens = new TokenList();
-        Tokenizer tokenizer = new Tokenizer(charReader, tokens);
-        tokenizer.tokenize();
-        Parser parser = new Parser(tokens);
-        Json jo = parser.parse();
-        System.out.println(tokens);
-        System.out.println(jo);
-//        System.out.println(((JsonObject) jo).get("a"));
-//        System.out.println(((JsonObject) jo).get("b"));
-//        System.out.println(((JsonObject) jo).getJsonObject("c").get("a"));
-//        System.out.println(((JsonObject) jo).getJsonObject("c").getJsonArray("c"));
     }
 }

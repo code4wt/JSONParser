@@ -1,14 +1,17 @@
 package com.titizz.jsonparser.model;
 
+import com.titizz.jsonparser.BeautifyJsonUtils;
 import com.titizz.jsonparser.exception.JsonTypeException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by code4wt on 17/5/19.
  */
-public class JsonObject implements Json {
+public class JsonObject {
 
     private Map<String, Object> map = new HashMap<String, Object>();
 
@@ -18,6 +21,10 @@ public class JsonObject implements Json {
 
     public Object get(String key) {
         return map.get(key);
+    }
+
+    public List<Map.Entry<String, Object>> getAllKeyValue() {
+        return new ArrayList<>(map.entrySet());
     }
 
     public JsonObject getJsonObject(String key) {
@@ -44,5 +51,10 @@ public class JsonObject implements Json {
         }
 
         return (JsonArray) obj;
+    }
+
+    @Override
+    public String toString() {
+        return BeautifyJsonUtils.beautify(this);
     }
 }

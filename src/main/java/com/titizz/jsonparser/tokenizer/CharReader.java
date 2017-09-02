@@ -14,6 +14,8 @@ public class CharReader {
 
     private char[] buffer;
 
+    private char[] tmp;
+
     private int pos;
 
     private int size;
@@ -21,10 +23,11 @@ public class CharReader {
     public CharReader(Reader reader) {
         this.reader = reader;
         buffer = new char[BUFFER_SIZE];
+        tmp = new char[BUFFER_SIZE - 1];
     }
 
     public char peek() throws IOException {
-        if (!hasMore()) {
+        if (pos - 1 >= size) {
             return (char) -1;
         }
 
