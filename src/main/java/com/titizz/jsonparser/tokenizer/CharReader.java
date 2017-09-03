@@ -14,8 +14,6 @@ public class CharReader {
 
     private char[] buffer;
 
-    private char[] tmp;
-
     private int pos;
 
     private int size;
@@ -23,9 +21,13 @@ public class CharReader {
     public CharReader(Reader reader) {
         this.reader = reader;
         buffer = new char[BUFFER_SIZE];
-        tmp = new char[BUFFER_SIZE - 1];
     }
 
+    /**
+     * 返回 pos 下标处的字符，并返回
+     * @return
+     * @throws IOException
+     */
     public char peek() throws IOException {
         if (pos - 1 >= size) {
             return (char) -1;
@@ -34,6 +36,11 @@ public class CharReader {
         return buffer[Math.max(0, pos - 1)];
     }
 
+    /**
+     * 返回 pos 下标处的字符，并将 pos + 1，最后返回字符
+     * @return
+     * @throws IOException
+     */
     public char next() throws IOException {
         if (!hasMore()) {
             return (char) -1;

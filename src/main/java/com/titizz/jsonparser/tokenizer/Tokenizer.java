@@ -82,9 +82,6 @@ public class Tokenizer {
         StringBuilder sb = new StringBuilder();
         for (;;) {
             char ch = charReader.next();
-            if (ch == '泠') {
-                int a = 1;
-            }
             if (ch == '\\') {
                 if (!isEscape()) {
                     throw new JsonParseException("Invalid escape character");
