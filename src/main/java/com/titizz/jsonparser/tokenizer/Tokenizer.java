@@ -99,8 +99,6 @@ public class Tokenizer {
                         }
                     }
                 }
-
-                continue;
             } else if (ch == '"') {
                 return new Token(TokenType.STRING, sb.toString());
             } else if (ch == '\r' || ch == '\n') {
@@ -113,12 +111,9 @@ public class Tokenizer {
 
     private boolean isEscape() throws IOException {
         char ch = charReader.next();
-        if (ch == '"' || ch == '\\' || ch == 'u' || ch == 'r'
-                || ch == 'n' || ch == 'b' || ch == 't' || ch == 'f') {
-            return true;
-        }
+        return (ch == '"' || ch == '\\' || ch == 'u' || ch == 'r'
+                || ch == 'n' || ch == 'b' || ch == 't' || ch == 'f');
 
-        return false;
     }
 
     private boolean isHex(char ch) {
@@ -129,10 +124,10 @@ public class Tokenizer {
     private Token readNumber() throws IOException {
         char ch = charReader.peek();
         StringBuilder sb = new StringBuilder();
-        if (ch == '-') {
+        if (ch == '-') {    // 处理负数
             sb.append(ch);
             ch = charReader.next();
-            if (ch == '0') {    // 处理-0
+            if (ch == '0') {    // 处理 -0.xxxx
                 sb.append(ch);
                 sb.append(readFracAndExp());
             } else if (isDigitOne2Nine(ch)) {
@@ -147,7 +142,7 @@ public class Tokenizer {
             } else {
                 throw new JsonParseException("Invalid minus number");
             }
-        } else if (ch == '0') {
+        } else if (ch == '0') {    // 处理小数
             sb.append(ch);
             sb.append(readFracAndExp());
         } else {
