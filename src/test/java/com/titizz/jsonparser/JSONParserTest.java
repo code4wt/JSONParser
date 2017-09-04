@@ -78,6 +78,26 @@ public class JSONParserTest {
         assertEquals(null, d.get(8));
     }
 
+    @Test
+    public void fromJSON2() throws Exception {
+        String json = "[[1,2,3,\"\u4e2d\"]]";
+        JSONParser jsonParser = new JSONParser();
+        JsonArray jsonArray = (JsonArray) jsonParser.fromJSON(json);
+        System.out.println(jsonArray);
+    }
+
+    @Test
+    public void beautifyJSON() throws Exception {
+        String json = "{\"name\": \"狄仁杰\", \"type\": \"射手\", \"ability\":[\"六令追凶\",\"逃脱\",\"王朝密令\"],\"history\":{\"DOB\":630,\"DOD\":700,\"position\":\"宰相\",\"dynasty\":\"唐朝\"}}";
+        System.out.println("原 JSON 字符串：");
+        System.out.println(json);
+        System.out.println("\n");
+        System.out.println("美化后的 JSON 字符串：");
+        JSONParser jsonParser = new JSONParser();
+        JsonObject drj = (JsonObject) jsonParser.fromJSON(json);
+        System.out.println(drj);
+    }
+
     private String getJSON() throws IOException {
         String url = "http://music.163.com/weapi/v3/playlist/detail";
         List<BasicNameValuePair> params = new ArrayList<>();
