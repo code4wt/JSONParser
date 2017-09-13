@@ -1,2 +1,2 @@
 # JSONParser
-一个简单的json解析器
+JSONParser 是一个简单的 JSON 解析器，用于将 JSON 字符串解析成 JSON Object 或 JSON Array。同时 JSONParser 里实现了 JSON 美化功能，可将解析出的 JSON Object 或 JSON Array 进行美化，便于阅读 JSON 内容。详细原理及效果请参见我的博文 [自己动手实现一个简单的JSON解析器](https://segmentfault.com/a/1190000010998941)。
