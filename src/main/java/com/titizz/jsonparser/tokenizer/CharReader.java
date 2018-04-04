@@ -26,9 +26,8 @@ public class CharReader {
     /**
      * 返回 pos 下标处的字符，并返回
      * @return
-     * @throws IOException
      */
-    public char peek() throws IOException {
+    public char peek() {
         if (pos - 1 >= size) {
             return (char) -1;
         }
